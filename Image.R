@@ -11,13 +11,13 @@ args = commandArgs(trailingOnly=TRUE)
 
 im <- load.image("color_image_1.jpg") # input image
 
-statement <- "columns" # "rows", "columns", "circles in", "circles out"
+statement <- "rows" # "rows", "columns", "circles in", "circles out"
 # If "columns", each row is a "movement". Notes traverse the row . If "rows", each column is a "movement". Notes traverse the column.
 # "circles out" means pixels play from center outward in a square radial pattern; "circles in" goes opposite direction
 
 row_len <- 60 # how many COLUMNS are we sampling (for both, will grab equidistant; e.g. 1st, 31st, etc., AND first+last ones)
 
-col_len <- 46 # how many ROWS are we sampling? meaning length of column vector.
+col_len <- 47 # how many ROWS are we sampling? meaning length of column vector.
 
 tonal <- 0.5 # assign all notes to a key signature (1), assign some based on RGB similarity (0.5), or keep "atonal" (0)
 
@@ -321,7 +321,7 @@ note_lengths <- c(2.6666667,5.33333334,2,2,2,2,4,4,4,4,8,8,16) # sixteenths to h
 must_do_3 <- 4 # If a triplet is selected, two more MUST occur, otherwise the rhythm gets too syncopated.
 volume <- 80 # I chose a 50 - 127 volume range, begins at volume = 80
 
-if (statement == "circles in" || statement == "circles out") { # if circle path, randomly change tempo if argument 6 is 1.
+if (statement == "rows" || statement == "circles out") { # if circle path, randomly change tempo if argument 6 is 1.
   rnum <- round(runif(1,1,min(num_row, num_col)))              # this isn't necessary for rows/columns, since the end of the row/column marks the end
   rtvec <- unique(sort(round(runif(rnum,1,num_row*num_col-2))))
   rnum <- length(rtvec)
@@ -330,13 +330,16 @@ if (statement == "circles in" || statement == "circles out") { # if circle path,
   rtvec <- seq(num_col, by = num_col, num_col*num_row) # we now have checkpoints for adjusting tempo
 }
 
-noclue <- 0
+noclue <- 0 ; one <- 0
 if (num_col > 13) { # The whole header is 12 lines; I had to do this to prevent the header from overwriting the first note data for small # columns
   noclue <- num_col - 13
 }
+if (col_len%%2 == 1 & (statement == "circles in" | statement == "circles out")) {
+  one <- 1
+}
 
 ################################### Begin to build the .csv file (music_MIDI, line 332)
-music_MIDI <- matrix(nrow = num_col*num_row*(2*d) + t_ON*(d*rnum-6 - (2*noclue-1)*3) + 4*d + 11 + t_ON, ncol = 7) # 
+music_MIDI <- matrix(nrow = num_col*num_row*(2*d) + t_ON*(d*rnum-6 - (2*noclue-1)*3) + 4*d + 11 + one, ncol = 7) # 
 music_len <- length(music_MIDI[,1])
 music_MIDI[1,1] <- 0 # these various rows create the mandatory header of the MIDI file
 header <- 960 # my default clock speed, defines resolution of audio.
