@@ -1,7 +1,7 @@
 # ImageMusicConversion
 The source code (written in R) of my project investigating a way to make music from pixel data.
 
-In the repository are the files necessary to run the MIDICSV / CSVMIDI programs (Fourmilab). These are not my property, but are necessary to run my project files.
+In the repository are the files necessary to run the MIDICSV / CSVMIDI programs (Fourmilab). Some are my property, some are not, but all are necessary to run my project files. The following files were created by me:
 
 My Files:
  - Image.R
